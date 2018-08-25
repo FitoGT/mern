@@ -35,8 +35,21 @@ class App extends Component {
       variables:{
         id:todo.id,
         complete:!todo.complete   
+      },
+      update:store => { 
+        const data = store.readQuery({ query: TodosQuery });
+        data.todos =data.todos.map(
+          x=> 
+            x.id===todo.id
+              ? {
+                ...todo,
+                complete:!todo.complete,
+                }
+              : x
+          );
+        store.writeQuery({query: TodosQuery, data})
       }
-    })
+    });
   };
 
   deleteTodo = todo => () => {
