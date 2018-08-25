@@ -8,7 +8,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import CommentIcon from '@material-ui/icons/Comment';
+import CloseIcon from '@material-ui/icons/Close';
 
 const TodosQuery = gql`
 {
@@ -24,24 +24,12 @@ const TodosQuery = gql`
 
 class App extends Component {
 
-  state = {
-    checked: [0],
+  updateTodo = todo => () => {
+    alert(todo);
   };
 
-  handleToggle = value => () => {
-    const { checked } = this.state;
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    this.setState({
-      checked: newChecked,
-    });
+  deleteTodo = todo => () => {
+    alert(todo);
   };
 
   render() {
@@ -62,17 +50,17 @@ class App extends Component {
                     role={undefined}
                     dense
                     button
-                    onClick={this.handleToggle(todo.id)}
+                    onClick={this.updateTodo(todo.id)}
                   >
                     <Checkbox
-                      checked={this.state.checked.indexOf(todo.id) !== -1}
+                      checked={todo.complete}
                       tabIndex={-1}
                       disableRipple
                     />
                     <ListItemText primary={todo.text} />
                     <ListItemSecondaryAction>
-                      <IconButton aria-label="Comments">
-                        <CommentIcon />
+                      <IconButton onClick={this.deleteTodo(todo.id)}>
+                        <CloseIcon />
                       </IconButton>
                     </ListItemSecondaryAction>
                   </ListItem>
