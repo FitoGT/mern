@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import gql from 'graphql-tag';
-import {graphql} from 'react-apollo';
+import {graphql,compose} from 'react-apollo';
 import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,21 +11,32 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
 const TodosQuery = gql`
-{
-  todos{
-    id
-    text
-    complete
+  {
+    todos{
+      id
+      text
+      complete
+    }
   }
-}
+`;
+
+const UpdateMutation = gql`
+  mutation($id: ID!,$complete: Boolean!) {
+    updateTodo(id:$id,complete:$complete) 
+  }
 `;
 
 
 
 class App extends Component {
 
-  updateTodo = todo => () => {
-    alert(todo);
+  updateTodo = async todo => {
+    await this.props.updateTodo({
+      variables:{
+        id:todo.id,
+        complete:!todo.complete   
+      }
+    })
   };
 
   deleteTodo = todo => () => {
@@ -50,7 +61,7 @@ class App extends Component {
                     role={undefined}
                     dense
                     button
-                    onClick={this.updateTodo(todo.id)}
+                    onClick={()=>this.updateTodo(todo)}
                   >
                     <Checkbox
                       checked={todo.complete}
@@ -74,4 +85,4 @@ class App extends Component {
   }
 }
 
-export default graphql(TodosQuery)(App);
+export default compose(graphql(UpdateMutation,{name:"updateTodo"}),graphql(TodosQuery))(App);
