@@ -1,15 +1,16 @@
-const { GraphQLServer } = require('graphql-yoga')
-
+const express = require('express');
+const { ApolloServer, gql } = require('apollo-server-express');
+const {makeExecutableSchema} = require('graphql-tools');
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/test', { useNewUrlParser: true });
 
 const Todo = mongoose.model("Todo",{
     text: String,
     complete:Boolean
-})
+});
+
 const typeDefs = `
   type Query {
-    hello(name: String): String!
     todos:[Todo]
   }
   type Todo {
@@ -22,11 +23,10 @@ const typeDefs = `
       updateTodo(id: ID!, complete:Boolean!): Boolean
       removeTodo(id:ID!):Boolean
   }
-`
+`;
 
 const resolvers = {
   Query: {
-    hello: (_, { name }) => `Hello ${name || 'World'}`,
     todos: ()=>Todo.find()
   },
   Mutation:{
@@ -45,9 +45,13 @@ const resolvers = {
       }
   }
 }
+const server = new ApolloServer({ typeDefs, resolvers });
 
-const server = new GraphQLServer({ typeDefs, resolvers })
-
+const app = express();
+server.applyMiddleware({ app });
+app.get('/', function (req, res) {
+  res.send('Hello World!');
+});
 mongoose.connection.once('open', function() {
-    server.start(() => console.log('Server is running on localhost:4000'))
+  app.listen(4000, () => console.log('Express GraphQL Server Now Running On localhost:4000/graphql'))
 });
