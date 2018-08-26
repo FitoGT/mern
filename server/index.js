@@ -1,6 +1,5 @@
 const express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
-const {makeExecutableSchema} = require('graphql-tools');
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/test', { useNewUrlParser: true });
 
