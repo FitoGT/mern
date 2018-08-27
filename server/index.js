@@ -50,6 +50,26 @@ const app = express();
 server.applyMiddleware({ app });
 app.get('/', function (req, res) {
   res.send('Hello World!');
+  var unirest = require("unirest");
+
+  var req = unirest("GET", "https://www.ygohub.com/api/card_info");
+
+  req.query({
+    "name": "Dark Magician"
+  });
+
+  req.headers({
+    "postman-token": "8209b747-faf9-ff13-8101-6a06c5d50d8b",
+    "cache-control": "no-cache"
+  });
+
+  
+  req.end(function (res) {
+    if (res.error) throw new Error(res.error);
+
+    return res.body;
+  });
+
 });
 mongoose.connection.once('open', function() {
   app.listen(4000, () => console.log('Express GraphQL Server Now Running On localhost:4000/graphql'))
