@@ -49,27 +49,18 @@ const server = new ApolloServer({ typeDefs, resolvers });
 const app = express();
 server.applyMiddleware({ app });
 app.get('/', function (req, res) {
-  res.send('Hello World!');
-  var unirest = require("unirest");
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    var apiURL =  'https://www.ygohub.com/api/card_info?name=Dark%20Magician';
 
-  var req = unirest("GET", "https://www.ygohub.com/api/card_info");
-
-  req.query({
-    "name": "Dark Magician"
-  });
-
-  req.headers({
-    "postman-token": "8209b747-faf9-ff13-8101-6a06c5d50d8b",
-    "cache-control": "no-cache"
-  });
-
-  
-  req.end(function (res) {
-    if (res.error) throw new Error(res.error);
-
-    return res.body;
-  });
-
+    var request = require('request');
+    request(apiURL, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+       res.send(body); // res is your original response 
+    }
+  })
 });
 mongoose.connection.once('open', function() {
   app.listen(4000, () => console.log('Express GraphQL Server Now Running On localhost:4000/graphql'))

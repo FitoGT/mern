@@ -9,6 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import axios from 'axios';
 
 const TodosQuery = gql`
   {
@@ -50,6 +51,19 @@ class App extends Component {
         store.writeQuery({query: TodosQuery, data})
       }
     });
+    axios.get('http://localhost:4000/')
+    .then(function (response) {
+      // handle success
+      console.log(response);
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    })
+    .then(function () {
+      // always executed
+    });
+
   };
 
   deleteTodo = todo => () => {
