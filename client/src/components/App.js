@@ -51,7 +51,7 @@ class App extends Component {
         store.writeQuery({query: TodosQuery, data})
       }
     });
-    axios.get('http://localhost:4000/')
+    axios.get('http://localhost:4000/dark%20magician%20girl')
     .then(function (response) {
       // handle success
       console.log(response);
