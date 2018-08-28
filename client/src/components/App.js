@@ -10,6 +10,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import axios from 'axios';
+import SearchBar from 'material-ui-search-bar'
 
 const TodosQuery = gql`
   {
@@ -30,7 +31,12 @@ const UpdateMutation = gql`
 
 
 class App extends Component {
-
+  constructor(props) {
+    super(props);
+    this.state = {
+      value:''
+    };
+  }
   updateTodo = async todo => {
     await this.props.updateTodo({
       variables:{
@@ -51,7 +57,9 @@ class App extends Component {
         store.writeQuery({query: TodosQuery, data})
       }
     });
-    axios.get('http://localhost:4000/dark%20magician%20girl')
+  };
+  getCard = async card => {
+    axios.get('http://localhost:4000/'+card)
     .then(function (response) {
       // handle success
       console.log(response);
@@ -63,9 +71,7 @@ class App extends Component {
     .then(function () {
       // always executed
     });
-
-  };
-
+  }
   deleteTodo = todo => () => {
     alert(todo);
   };
@@ -81,6 +87,11 @@ class App extends Component {
         <div style={{display:'flex'}}>
           <div style={{margin:'auto',width:400}}>
             <Paper elevation={1}>
+              <SearchBar
+                value={this.state.value}
+                onChange={(newValue) => this.setState({ value: newValue })}
+                onRequestSearch={() => this.getCard (this.state.value)}
+              />
               <List>
                 {todos.map(todo => (
                   <ListItem
