@@ -48,12 +48,12 @@ const server = new ApolloServer({ typeDefs, resolvers });
 
 const app = express();
 server.applyMiddleware({ app });
-app.get('/', function (req, res) {
+app.get('/:card', function (req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Credentials', true);
-    var apiURL =  'https://www.ygohub.com/api/card_info?name=Dark%20Magician';
+    var apiURL =  'https://www.ygohub.com/api/card_info?name='+req.params.card;
 
     var request = require('request');
     request(apiURL, function (error, response, body) {
